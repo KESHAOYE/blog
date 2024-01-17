@@ -1,0 +1,46 @@
+# Sample workflow for building and deploying a VitePress site to GitHub Pages
+name: Deploy VitePress site to Pages
+
+on:
+  # Runs on pushes targeting the `main` branch
+  push:
+    branches:
+      - master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      # Installs Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+
+      # Installs dependencies and builds the site
+      - name: Install and Build
+        run: |
+          npm install
+          npm run docs:build
+
+      # Uploads the site to Algolia
+      - name: Upload to Algolia
+        uses: algolia/docsearch-scraper-action@master
+        env:
+          # You need to create these secrets in your repository settings
+          APPLICATION_ID: Q2IEQJ1946
+          API_KEY: f624056b2a383a81ba7c1221c1838908
+          # The config file for Algolia DocSearch
+          CONFIG: docs/.vitepress/algolia.json
+
+      # Deploys the site to GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages # The branch the action should deploy to.
+          folder: docs/.vitepress/dist # The folder the action should deploy.
