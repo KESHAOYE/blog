@@ -46,7 +46,8 @@ export default (async () => defineConfig({
     algolia: {
       appId: 'Q2IEQJ1946',
       apiKey: 'f624056b2a383a81ba7c1221c1838908',
-      indexName: 'blog'
+      indexName: 'blog',
+      placeholder: '请输入要搜索的内容'
     }
   }
 })
