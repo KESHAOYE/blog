@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "KESHAOYE Planet"
   text: "Talk is cheap ! Show me the code"
-  tagline: "Share my technology 天道酬勤"
+  tagline: "Share my technology 天道酬勤！"
   image:
     src: /logo.png
     alt: my awesome profile
