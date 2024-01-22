@@ -7,7 +7,7 @@
  * @Date: 2023-03-25 21:26:49
  */
 import { defineConfig } from 'vitepress'
-import {generatorSideBar} from './utils/autoSideBar'
+import { generatorSideBar } from './utils/autoSideBar/index'
 
 
 // https://vitepress.dev/reference/site-config
@@ -15,24 +15,25 @@ export default (async () => defineConfig({
   lastUpdated: true,
   title: "KESHAOYE的后花园",
   description: "KESHAOYE的后花园",
-  base:'/blog/', 
+  base:'/blog/',
+  srcDir: 'src',
   publicPath: process.env.NODE_ENV === 'production'? '/blog/' : './',
   themeConfig: {
     logo: process.env.NODE_ENV === 'production'? './logo.png' : '/logo.png',
     nav: [
       { text: '首页', link: '/' },
-      { text: '推荐项目', items: [
+      { text: '关于我', link: '/myLife/'},
+      { text: '推荐工具', items: [
         {text: '即时工具', link: 'http://www.67tool.com'},
         {text: 'CSS动画库', link: 'http://hepengwei.cn/#/html/visualDesign'}
-      ]},
-      { text: '关于我', link: '/'}
+      ]}
     ],
 
     aside: true,
     
     outline: 'deep',
 
-    sidebar: await generatorSideBar({contentRoot: './docs', except: ['.vitepress', 'picture', 'project','video','public']}),
+    sidebar: generatorSideBar({contentRoot: './docs/src/', useModule: true, showEmptyFolder: false, except: ['.vitepress', 'public']}),
     
     socialLinks: [
       { icon: 'github', link: 'https://github.com/KESHAOYE' }
@@ -40,14 +41,10 @@ export default (async () => defineConfig({
 
     footer: {
       message: 'KESHAOYE-知识星球',
-      copyright: 'Copyright © 2022-2023 KEWEI LI'
+      copyright: 'Copyright © 2023-2024 KEWEI LI（2024.1.22起改版中...）'
     },
-
-    algolia: {
-      appId: 'Q2IEQJ1946',
-      apiKey: 'f624056b2a383a81ba7c1221c1838908',
-      indexName: 'blog',
-      placeholder: '请输入要搜索的内容'
+    search: {
+      provider: 'local'
     }
   }
 })

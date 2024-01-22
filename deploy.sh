@@ -12,9 +12,11 @@ cd docs/.vitepress/dist
 # 如果是发布到自定义域名
 # echo 'www.example.com' > CNAME
 
+nowTime=$(date "+%Y%m%d%H%M%S%")
+
 git init
 git add -A
-git commit -m 'deploy'
+git commit -m 'deploy:更新博客 - V${nowTime}'
 
 # 如果发布到 https://<USERNAME>.github.io
 # git push -f git@github.com:<USERNAME>/<USERNAME>.github.io.git master
