@@ -11,12 +11,12 @@ import fs from "fs";
 const versionFile = path.resolve(__dirname, "version.json");
 let version = "未知";
 
-if (process.env.NODE_ENV !== "production") {
-  console.log("版本号为开发环境");
-  version = "开发版本";
-} else if (fs.existsSync(versionFile)) {
+console.log("versionFile", versionFile);
+
+if (fs.existsSync(versionFile)) {
   const data = JSON.parse(fs.readFileSync(versionFile, "utf-8"));
-  version = data.version;
+  console.log("版本号为生产环境", data, process.env.NODE_ENV);
+  version = process.env.NODE_ENV === "development" ? "开发版本" : data.version;
 }
 
 // https://vitepress.dev/reference/site-config
@@ -62,7 +62,7 @@ export default async () =>
 
       footer: {
         message: `KESHAOYE-知识星球  ${version}`,
-        copyright: "Copyright © 2023-2025 KEWEI LI（2024.1.22起改版中...）",
+        copyright: "Copyright © 2023-2025 KEWEI LI",
       },
       search: {
         provider: "local",
