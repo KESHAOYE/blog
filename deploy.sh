@@ -28,6 +28,6 @@ git push -f https://github.com/KESHAOYE/blog.git main:gh-pages
 cd -
 
 # 提交 `version.json` 到 `master` 分支
-git add docs/.vitepress/version.json
+git add -A
 git commit -m "更新版本号 - V${nowTime}"
 git push origin master  # 推送到 master
