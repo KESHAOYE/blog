@@ -3,14 +3,14 @@
 # 遇到错误时终止脚本
 set -e
 
-# 生成静态文件
-yarn docs:build
-
 # 获取当前时间
 nowTime=$(date "+%Y%m%d%H%M%S")
 
 # 生成 `version.json` 并存入 `docs/.vitepress/`
 echo "{ \"version\": \"V${nowTime}\" }" > docs/.vitepress/version.json
+
+# 生成静态文件
+yarn docs:build
 
 # 进入 `dist` 目录
 cd docs/.vitepress/dist
