@@ -1,6 +1,20 @@
 import fs from "fs";
 import path from "path";
 
+// —— 自然排序比较器（数字按数值比较，大小写不敏感）
+const collator = new Intl.Collator(undefined, {
+  numeric: true,
+  sensitivity: "base",
+});
+
+// 更健壮：支持 “1.”、“1-”、“1_”、“1 ）”、“1 空格”等前缀数字形式
+function extractNumberFromTitle(title = "") {
+  const match = String(title)
+    .trim()
+    .match(/^(\d+)(?:[.\-_\)\s]+)?/);
+  return match ? parseInt(match[1], 10) : null;
+}
+
 function generatorSideBar(config = {}) {
   // 设置默认值
   config.contentRoot = config?.contentRoot ?? "./docs";
@@ -132,34 +146,40 @@ function dealModule(items, dirName, config) {
   ); // 对模块项进行排序
 }
 
-// 根据需要对文章进行排序
+// —— 方案A：自然排序（默认），并保留 numberPrefix 的优先数字比较
 function sortList(items, config) {
   const { sort, sortType } = config;
   if (!sort || !Array.isArray(items)) return items;
 
+  // 保持纯函数：不直接修改原数组
+  const arr = items.slice();
+
   if (sortType === "numberPrefix") {
-    return items.sort((a, b) => {
-      const numA = extractNumberFromTitle(a.text);
-      const numB = extractNumberFromTitle(b.text);
-      if (numA === null && numB === null) return 0;
-      if (numA === null) return 1;
-      if (numB === null) return -1;
-      return numA - numB;
+    return arr.sort((a, b) => {
+      const at = a?.text ?? "";
+      const bt = b?.text ?? "";
+      const numA = extractNumberFromTitle(at);
+      const numB = extractNumberFromTitle(bt);
+      // 两者都有数字前缀 => 按数字比
+      if (numA != null && numB != null) {
+        const diff = numA - numB;
+        return diff !== 0 ? diff : collator.compare(at, bt);
+      }
+      // 只有一方有数字前缀 => 有数字的优先
+      if (numA != null) return -1;
+      if (numB != null) return 1;
+      // 都没有数字前缀 => 自然排序
+      return collator.compare(at, bt);
     });
   }
 
-  // 如果是按创建时间排序，则保留原逻辑（这里未展示原逻辑）
   if (sortType === "createTime") {
-    // 原有逻辑...
+    // TODO: 这里按你的“创建时间”实现（示例：读取 fs.statSync(file).birthtimeMs）
+    return arr;
   }
 
-  return items;
-}
-
-// 提取标题中的数字序号
-function extractNumberFromTitle(title) {
-  const match = title.match(/^(\d+)\./);
-  return match ? parseInt(match[1], 10) : null; // 提取数字部分
+  // 默认：自然排序（1, 2, 11）
+  return arr.sort((a, b) => collator.compare(a?.text ?? "", b?.text ?? ""));
 }
 
 export { generatorSideBar };
