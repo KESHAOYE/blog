@@ -1,5 +1,19 @@
 #!/usr/bin/env sh
 
+pause_on_exit() {
+  code=$?
+  echo ""
+  if [ $code -eq 0 ]; then
+    echo "✅ 脚本执行完成"
+  else
+    echo "❌ 脚本执行失败，退出码：$code"
+  fi
+  read -r -p "按回车键退出..." _
+  exit $code
+}
+
+trap pause_on_exit EXIT
+
 # 遇到错误时终止脚本
 set -e
 
